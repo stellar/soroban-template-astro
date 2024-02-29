@@ -4,6 +4,14 @@ import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Load environment variables starting with PUBLIC_ into the environment,
+// so we don't need to specify duplicate variables in .env
+for (const key in process.env) {
+  if (key.startsWith('PUBLIC_')) {
+    process.env[key.substring(7)] = process.env[key];
+  }
+}
+
 console.log("###################### Initializing ########################");
 
 // Get dirname (equivalent to the Bash version)
@@ -94,8 +102,6 @@ function import_all() {
     }
   });
 }
-
-exe('echo $SOROBAN_ACCOUNT $SOROBAN_NETWORK_PASSPHRASE $SOROBAN_RPC_URL');
 
 // Calling the functions (equivalent to the last part of your bash script)
 fund_all();
