@@ -77,15 +77,16 @@ function bind_all() {
 function importContract(contract) {
   const filenameNoExt = filenameNoExtension(contract);
   const outputDir = `${dirname}/src/contracts/`;
-  mkdirSync(outputDir, { recursive: true })
+  mkdirSync(outputDir, { recursive: true });
 
-  const importContent = `import * as Client from '${filenameNoExt}';\n` +
-                        `import { rpcUrl } from './util';\n\n` +
-                        `export default new Client.Contract({\n` +
-                        `  ...Client.networks.standalone,\n` +
-                        `  rpcUrl,\n` +
-                        `});\n`;
-  
+  const importContent =
+    `import * as Client from '${filenameNoExt}';\n` +
+    `import { rpcUrl } from './util';\n\n` +
+    `export default new Client.Contract({\n` +
+    `  ...Client.networks.${process.env.SOROBAN_NETWORK},\n` +
+    `  rpcUrl,\n` +
+    `});\n`;
+
   const outputPath = `${outputDir}/${filenameNoExt}.ts`;
   writeFileSync(outputPath, importContent);
   console.log(`Created import for ${filenameNoExt}`);
