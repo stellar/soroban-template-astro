@@ -1,0 +1,24 @@
+{
+  "name": "lol",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "init": "node initialize.js",
+    "dev": "npm run init && astro dev",
+    "start": "npm run init && astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.4.1",
+    "astro": "^4.2.4",
+    "typescript": "^5.3.3"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "dotenv": "^16.4.1"
+  }
+}
