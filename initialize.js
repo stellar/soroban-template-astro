@@ -12,16 +12,6 @@ for (const key in process.env) {
   }
 }
 
-// The stellar-sdk Client requires (for now) a defined public key. These are
-// the Genesis accounts for each of the "typical" networks, and should work as
-// a valid, funded network account.
-const GENESIS_ACCOUNTS = {
-  public: 'GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN7',
-  testnet: 'GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H',
-  futurenet: 'GADNDFP7HM3KFVHOQBBJDBGRONMKQVUYKXI6OYNDMS2ZIK7L6HA3F2RF',
-  standalone: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI',
-}
-
 console.log("###################### Initializing ########################");
 
 // Get dirname (equivalent to the Bash version)
@@ -95,8 +85,12 @@ function importContract(contract) {
     `export default new Client.Client({\n` +
     `  ...Client.networks.${process.env.SOROBAN_NETWORK},\n` +
     `  rpcUrl,\n` +
-    `${process.env.SOROBAN_NETWORK === 'local' || 'standalone' ? `  allowHttp: true,\n` : null}` +
-    `  publicKey: '${GENESIS_ACCOUNTS[process.env.SOROBAN_NETWORK]}',\n` +
+    `${
+      process.env.SOROBAN_NETWORK === "local" || "standalone"
+        ? `  allowHttp: true,\n`
+        : null
+    }` +
+    `  publicKey: undefined,\n` +
     `});\n`;
 
   const outputPath = `${outputDir}/${filenameNoExt}.ts`;
