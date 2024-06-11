@@ -35,7 +35,7 @@ function fundAll() {
 
 function removeFiles(pattern) {
   console.log(`remove ${pattern}`);
-  glob(pattern).forEach((entry) => rmSync(entry));
+  glob(pattern).forEach(rmSync);
 }
 
 function buildAll() {
@@ -58,7 +58,7 @@ function deployAll() {
 
   const wasmFiles = glob(`${dirname}/target/wasm32-unknown-unknown/release/*.wasm`);
 
-  wasmFiles.forEach(wasmFile => deploy(wasmFile));
+  wasmFiles.forEach(deploy);
 }
 
 function contracts() {
@@ -78,7 +78,7 @@ function bind({alias, id}) {
 }
 
 function bindAll() {
-  contracts().forEach(contract => bind(contract));
+  contracts().forEach(bind);
 }
 
 function importContract({id, alias}) {
@@ -108,7 +108,7 @@ function importContract({id, alias}) {
 }
 
 function importAll() {
-  contracts().forEach(contract => importContract(contract));
+  contracts().forEach(importContract);
 }
 
 // Calling the functions (equivalent to the last part of your bash script)
