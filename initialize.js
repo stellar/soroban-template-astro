@@ -35,7 +35,7 @@ function fundAll() {
 
 function removeFiles(pattern) {
   console.log(`remove ${pattern}`);
-  glob(pattern).forEach(rmSync);
+  glob(pattern).forEach((entry) => rmSync(entry));
 }
 
 function buildAll() {
