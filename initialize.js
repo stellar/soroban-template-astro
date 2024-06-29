@@ -30,7 +30,6 @@ function exe(command) {
 
 function fundAll() {
   exe(`${cli} keys generate ${process.env.SOROBAN_ACCOUNT}`);
-  exe(`${cli} keys fund ${process.env.SOROBAN_ACCOUNT}`);
 }
 
 function removeFiles(pattern) {
