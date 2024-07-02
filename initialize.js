@@ -96,7 +96,6 @@ function importContract({id, alias}) {
         ? `  allowHttp: true,\n`
         : null
     }` +
-    `  publicKey: undefined,\n` +
     `});\n`;
 
   const outputPath = `${outputDir}/${alias}.ts`;
