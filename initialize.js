@@ -18,6 +18,7 @@ console.log('###################### Initializing ########################');
 // Get dirname (equivalent to the Bash version)
 const __filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(__filename);
+const contractsDir = `${dirname}/.stellar/contract-ids`;
 
 // variable for later setting pinned version of soroban in "$(dirname/target/bin/soroban)"
 const cli = 'stellar';
@@ -29,7 +30,7 @@ function exe(command) {
 }
 
 function fundAll() {
-  exe(`${cli} keys generate ${process.env.SOROBAN_ACCOUNT}`);
+  exe(`${cli} keys generate --fund ${process.env.STELLAR_ACCOUNT} | true`);
 }
 
 function removeFiles(pattern) {
@@ -52,7 +53,6 @@ function deploy(wasm) {
 }
 
 function deployAll() {
-  const contractsDir = `${dirname}/.soroban/contract-ids`;
   mkdirSync(contractsDir, { recursive: true });
 
   const wasmFiles = glob(`${dirname}/target/wasm32-unknown-unknown/release/*.wasm`);
@@ -61,26 +61,27 @@ function deployAll() {
 }
 
 function contracts() {
-  const contractFiles = glob(`${dirname}/.soroban/contract-ids/*.json`);
+  const contractFiles = glob(`${contractsDir}/*.json`);
 
   return contractFiles
     .map(path => ({
       alias: filenameNoExtension(path),
       ...JSON.parse(readFileSync(path))
     }))
-    .filter(data => data.ids[process.env.SOROBAN_NETWORK_PASSPHRASE])
-    .map(data => ({alias: data.alias, id: data.ids[process.env.SOROBAN_NETWORK_PASSPHRASE]}));
+    .filter(data => data.ids[process.env.STELLAR_NETWORK_PASSPHRASE])
+    .map(data => ({alias: data.alias, id: data.ids[process.env.STELLAR_NETWORK_PASSPHRASE]}));
 }
 
 function bind({alias, id}) {
   exe(`${cli} contract bindings typescript --contract-id ${id} --output-dir ${dirname}/packages/${alias} --overwrite`);
+  exe(`(cd ${dirname}/packages/${alias} && npm i && npm run build)`);
 }
 
 function bindAll() {
   contracts().forEach(bind);
 }
 
-function importContract({id, alias}) {
+function importContract({alias}) {
   const outputDir = `${dirname}/src/contracts/`;
 
   mkdirSync(outputDir, { recursive: true });
@@ -89,10 +90,10 @@ function importContract({id, alias}) {
     `import * as Client from '${alias}';\n` +
     `import { rpcUrl } from './util';\n\n` +
     `export default new Client.Client({\n` +
-    `  ...Client.networks.${process.env.SOROBAN_NETWORK},\n` +
+    `  ...Client.networks.${process.env.STELLAR_NETWORK},\n` +
     `  rpcUrl,\n` +
     `${
-      process.env.SOROBAN_NETWORK === "local" || "standalone"
+      process.env.STELLAR_NETWORK === "local" || "standalone"
         ? `  allowHttp: true,\n`
         : null
     }` +
